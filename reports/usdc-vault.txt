@@ -1,0 +1,10 @@
+
+Token-2022 Integration Scan
+  mint     EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+  program  TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA  (classic SPL Token — no extensions)
+  decimals 6
+  profile  vault
+
+  No risky extensions detected.  Treat like a classic SPL token.
+  OVERALL: ALLOW for a vault integration
+

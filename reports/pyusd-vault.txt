@@ -1,0 +1,52 @@
+
+Token-2022 Integration Scan
+  mint     2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo
+  program  TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+  decimals 6
+  profile  vault
+
+  REJECT  PermanentDelegate [critical]
+        impact:     A permanent delegate can transfer or burn tokens from ANY account — including your vault — at any time.
+        breaks:     custody — the issuer (or whoever holds the delegate) can drain deposited collateral; your books no longer reflect reality
+        detail:     delegate=2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk (ACTIVE)
+        mitigation: Reject by default. Only allow if the delegate is provably benign (e.g. burned/None) or a governance you trust. Treat balances as adversarially mutable otherwise.
+
+  ALLOW  TransferHook [critical]
+        impact:     Every transfer makes a CPI into an issuer-controlled program with attacker-chosen extra accounts.
+        breaks:     atomicity & reentrancy assumptions; the hook can fail (DoS your withdrawals), re-enter your program, or read/write injected accounts
+        detail:     no hook program set (inert) — inert; would be REJECT if activated
+        mitigation: Reject unknown hook programs. If you must support one, allowlist the specific hook program id, apply checks-effects-interactions, set a reentrancy/transferring flag, and resolve extra accounts safely.
+
+  HANDLE  ConfidentialTransferFeeConfig [high]
+        impact:     Confidential-transfer fee config; pairs with confidential transfers.
+        breaks:     fee accounting under confidential transfers
+        mitigation: Same posture as ConfidentialTransferMint.
+
+  REJECT  ConfidentialTransferMint [high]
+        impact:     Balances/amounts can be encrypted; on-chain reads of token amounts may not reflect confidential balances.
+        breaks:     accounting that reads visible balances; oracle/price and collateral valuation
+        mitigation: Avoid unless you explicitly support confidential transfers. Do not assume visible balance == true balance.
+
+  HANDLE  TransferFeeConfig [high]
+        impact:     A fee is withheld from every transfer, so the amount credited to your account is LESS than the amount sent.
+        breaks:     share/LP math, escrow accounting, 1:1 invariants — anything that trusts the instruction `amount`
+        detail:     feeBasisPoints=0 (0.00%), maximumFee=0 — currently zero, but the fee authority can raise it
+        mitigation: Never trust the transfer `amount`. Measure the credited delta (pre/post balance + reload) OR read TransferFeeConfig and subtract the epoch fee. Mint shares on the *received* amount.
+
+  HANDLE  MintCloseAuthority [medium]
+        impact:     The mint account itself can be closed (when supply is zero).
+        breaks:     long-lived references to the mint; edge cases in pools that assume the mint persists
+        mitigation: Usually low impact for live tokens; note it and avoid assuming the mint is immortal.
+
+  ALLOW  MetadataPointer [low]
+        impact:     Points to a metadata account/self.
+        breaks:     nothing transfer-related
+        mitigation: Informational.
+
+  ALLOW  TokenMetadata [low]
+        impact:     On-mint metadata.
+        breaks:     nothing transfer-related
+        mitigation: Informational.
+
+  OVERALL: REJECT for a vault integration
+
