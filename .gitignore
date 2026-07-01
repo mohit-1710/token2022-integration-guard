@@ -1,0 +1,28 @@
+# Rust / Anchor
+target/
+**/target/
+.anchor/
+test-ledger/
+*.so
+!**/programs/**/*.rs
+
+# Node
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+*.tsbuildinfo
+bun.lockb
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Keys (never commit)
+*.pem
+**/deploy/*-keypair.json
+!**/deploy/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
