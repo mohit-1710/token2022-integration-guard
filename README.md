@@ -110,8 +110,8 @@ Committed in [`reports/`](reports/), reproducible with the commands below.
 
 | Mint | Program | Verdict (vault) | Driver |
 |---|---|---|---|
-| **PYUSD** `2b1k…24GXo` | Token-2022 | 🔴 **REJECT** (exit 2) | active PermanentDelegate + ConfidentialTransfer. Its TransferHook is inert, correctly `ALLOW`. |
-| **USDC** `EPjF…Dt1v` | classic SPL | 🟢 **ALLOW** | no extensions, treated like a normal token. |
+| **PYUSD** `2b1k…24GXo` | Token-2022 | **REJECT** (exit 2) | active PermanentDelegate + ConfidentialTransfer. Its TransferHook is inert, correctly `ALLOW`. |
+| **USDC** `EPjF…Dt1v` | classic SPL | **ALLOW** | no extensions, treated like a normal token. |
 
 ---
 
